@@ -117,8 +117,10 @@ static const NSString *VIMUploadFileTaskName = @"FILE_UPLOAD";
     [request setValue:[NSString stringWithFormat:@"%llu", filesize] forHTTPHeaderField:@"Content-Length"];
     [request setValue:@"video/mp4" forHTTPHeaderField:@"Content-Type"];
     
-    NSProgress *progress = nil;
-    NSURLSessionUploadTask *task = [self.sessionManager uploadTaskWithRequest:request fromFile:sourceURL progress:&progress completionHandler:nil];
+    __block NSProgress *progress = nil;
+    NSURLSessionUploadTask *task = [self.sessionManager uploadTaskWithRequest:request fromFile:sourceURL progress:^(NSProgress * _Nonnull uploadProgress) {
+        progress = uploadProgress;
+    } completionHandler:nil];
     self.backgroundTaskIdentifier = task.taskIdentifier;
 
     self.uploadProgress = progress;
